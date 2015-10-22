@@ -76,6 +76,9 @@ public class ACRCloudRecognizer {
     public String recognize(byte[] wavAudioBuffer, int wavAudioBufferLen)
     {
         byte[] fp = ACRCloudExtrTool.createFingerprint(wavAudioBuffer, wavAudioBufferLen, false);
+        if (fp == null) {
+            return "";
+        }
         return this.doRecogize(fp);
     }
 
@@ -95,6 +98,9 @@ public class ACRCloudRecognizer {
     public String recognizeByFileBuffer(byte[] fileBuffer, int fileBufferLen, int startSeconds)
     {
         byte[] fp = ACRCloudExtrTool.createFingerprintByFileBuffer(fileBuffer, fileBufferLen, startSeconds, 12, false);
+        if (fp == null) {
+            return "";
+        }
         return this.doRecogize(fp);
     }
 
@@ -113,6 +119,9 @@ public class ACRCloudRecognizer {
     public String recognizeByFile(String filePath, int startSeconds)
     {
         byte[] fp = ACRCloudExtrTool.createFingerprintByFile(filePath, startSeconds, 12, false);
+        if (fp == null) {
+            return "";
+        }
         return this.doRecogize(fp);
     }
  
