@@ -6,6 +6,10 @@ This java SDK can recognize ACRCloud by most of audio/video file.<br>
 >>>>Audio: mp3, wav, m4a, flac, aac, amr, ape, ogg ...<br>
 >>>>Video: mp4, mkv, wmv, flv, ts, avi ...
 
+# ACRCloud
+Docs: [https://docs.acrcloud.com/](https://docs.acrcloud.com/)<br>
+Console: [https://console.acrcloud.com/](https://console.acrcloud.com/)
+
 # Functions
 Introduction all API.
 ## src/com/acrcloud/utils/ACRCloudRecognizer.java
