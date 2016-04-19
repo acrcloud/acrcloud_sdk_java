@@ -16,10 +16,12 @@ public class Test {
 
     public static void main(String[] args) {
         Map<String, Object> config = new HashMap<String, Object>();
-        config.put("host", "ap-southeast-1.api.acrcloud.com");
-        // Replace "xxxxxxxx" below with your project's access_key and access_secret.
+        
+        // Replace "xxxxxxxx" below with your project's host, access_key and access_secret.
+        config.put("host", "XXXXXXXXX");
         config.put("access_key", "XXXXXXXX");
         config.put("access_secret", "XXXXXXXX");
+        
         config.put("debug", false);
         config.put("timeout", 10); // seconds
 
