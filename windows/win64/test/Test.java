@@ -34,8 +34,8 @@ public class Test {
           *     
           * 
          **/
-        // It will skip 80 seconds.
-        String result = re.recognizeByFile(args[0], 80);
+        // It will skip 0 seconds.
+        String result = re.recognizeByFile(args[0], 0);
         System.out.println(result);
 
 
@@ -75,7 +75,7 @@ public class Test {
             return;
 
         // It will skip 80 seconds from the begginning of (buffer).
-        result = re.recognizeByFileBuffer(buffer, bufferLen, 80);
+        result = re.recognizeByFileBuffer(buffer, bufferLen, 0);
         System.out.println(result);
 
 
