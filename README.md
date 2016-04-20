@@ -170,5 +170,11 @@ public class Test {
 ```
 
 # Eclipse Project
-1. create java project <br>
-  ![image](http://github.com/acrcloud/acrcloud_sdk_java/eclipse_tutorial_image/create_project.png)
+1. create java project: <br>
+  ![image](https://github.com/acrcloud/acrcloud_sdk_java/blob/master/eclipse_tutorial_image/create_project.png) <br>
+2. add jar library, click right-hand on "commons-codec-1.10.jar" >> Build Path >> Add to Build Path: <br>
+  ![image](https://github.com/acrcloud/acrcloud_sdk_java/blob/master/eclipse_tutorial_image/add_jar.png) <br>
+  ![image](https://github.com/acrcloud/acrcloud_sdk_java/blob/master/eclipse_tutorial_image/add_jar_1.png) <br>
+3.add (dll or so) library: <br>
+  ![image](https://github.com/acrcloud/acrcloud_sdk_java/blob/master/eclipse_tutorial_image/add_native.png) <br>
+
