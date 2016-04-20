@@ -15,6 +15,9 @@ Console: [https://console.acrcloud.com/](https://console.acrcloud.com/)
 X86: [download and install Library(windows/vcredist_x86.exe)](https://www.microsoft.com/en-us/download/details.aspx?id=5555)<br>
 x64: [download and install Library(windows/vcredist_x64.exe)](https://www.microsoft.com/en-us/download/details.aspx?id=14632)
 
+# Note
+1. You must not modify package name "com.acrcloud.utils".<br>
+2. If you run the SDK on Windows, you must install library(vcredist).
 
 # Functions
 Introduction all API.
