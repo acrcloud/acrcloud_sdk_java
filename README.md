@@ -11,8 +11,8 @@ Docs: [https://docs.acrcloud.com/](https://docs.acrcloud.com/)<br>
 Console: [https://console.acrcloud.com/](https://console.acrcloud.com/)
 
 # Windows Runtime Library 
-X86: [https://www.microsoft.com/en-us/download/details.aspx?id=5555](download and install Library)<br>
-x64: [https://www.microsoft.com/en-us/download/details.aspx?id=14632](download and install Library)
+X86: [download and install Library(windows/vcredist_x86.exe)](https://www.microsoft.com/en-us/download/details.aspx?id=5555)<br>
+x64: [download and install Library(windows/vcredist_x64.exe)](https://www.microsoft.com/en-us/download/details.aspx?id=14632)
 
 
 # Functions
