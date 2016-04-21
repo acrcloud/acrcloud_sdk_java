@@ -118,9 +118,12 @@ public class Test {
 
     public static void main(String[] args) {
         Map<String, Object> config = new HashMap<String, Object>();
-        config.put("host", "ap-southeast-1.api.acrcloud.com");
+        
+        // replace "XXXXXXXX" with your project's host, access_key and access_secret
+        config.put("host", "XXXXXXXX");
         config.put("access_key", "XXXXXXXX");
         config.put("access_secret", "XXXXXXXX");
+        
         config.put("debug", false);
         config.put("timeout", 10); // seconds
 
