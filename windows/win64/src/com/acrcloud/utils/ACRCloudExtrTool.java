@@ -105,6 +105,13 @@ public class ACRCloudExtrTool {
         return native_get_doc();
     }
 
+    public static int getDurationMSByFile(String fileName) {
+        if (fileName == null || "".equals(fileName)) {
+            return 0;
+        }
+        return native_get_duration_ms_by_file(fileName);
+    }
+
     private static native void native_init();
     private static native byte[] native_create_fingerprint_by_file(String file_name, int start_time_seconds, int audio_len_seconds, boolean is_db_fingerprint);
     private static native byte[] native_create_fingerprint_by_filebuffer(byte[] data_buffer, int data_buffer_len, int start_time_seconds, int audio_len_seconds, boolean is_db_fingerprint);
@@ -112,5 +119,6 @@ public class ACRCloudExtrTool {
     private static native byte[] native_decode_audio_by_file(String file_name, int start_time_seconds, int audio_len_seconds);
     private static native byte[] native_decode_audio_by_filebuffer(byte[]data_buffer, int data_buffer_len, int start_time_seconds, int audio_len_seconds);
     private static native void native_set_debug();
+    private static native int native_get_duration_ms_by_file(String file_name);
     private static native String native_get_doc();
 }

@@ -75,11 +75,21 @@ public class ACRCloudRecognizer {
       **/
     public String recognize(byte[] wavAudioBuffer, int wavAudioBufferLen)
     {
-        byte[] fp = ACRCloudExtrTool.createFingerprint(wavAudioBuffer, wavAudioBufferLen, false);
-        if (fp == null) {
-            return "";
+        String result = ACRCloudStatusCode.NO_RESULT;
+        try {
+            byte[] fp = ACRCloudExtrTool.createFingerprint(wavAudioBuffer, wavAudioBufferLen, false);
+            if (fp == null) {
+                return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
+            }
+            if (fp.length <= 0) {
+                return ACRCloudStatusCode.NO_RESULT;
+            }
+            result = this.doRecogize(fp);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = ACRCloudStatusCode.UNKNOW_ERROR;
         }
-        return this.doRecogize(fp);
+        return result;
     }
 
     /**
@@ -97,11 +107,21 @@ public class ACRCloudRecognizer {
       **/
     public String recognizeByFileBuffer(byte[] fileBuffer, int fileBufferLen, int startSeconds)
     {
-        byte[] fp = ACRCloudExtrTool.createFingerprintByFileBuffer(fileBuffer, fileBufferLen, startSeconds, 12, false);
-        if (fp == null) {
-            return "";
+        String result = ACRCloudStatusCode.NO_RESULT;
+        try {
+            byte[] fp = ACRCloudExtrTool.createFingerprintByFileBuffer(fileBuffer, fileBufferLen, startSeconds, 12, false);
+            if (fp == null) {
+                return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
+            }
+            if (fp.length <= 0) {
+                return ACRCloudStatusCode.NO_RESULT;
+            }
+            result = this.doRecogize(fp);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = ACRCloudStatusCode.UNKNOW_ERROR;
         }
-        return this.doRecogize(fp);
+        return result;
     }
 
     /**
@@ -118,19 +138,24 @@ public class ACRCloudRecognizer {
       **/
     public String recognizeByFile(String filePath, int startSeconds)
     {
-        byte[] fp = ACRCloudExtrTool.createFingerprintByFile(filePath, startSeconds, 12, false);
-        if (fp == null) {
-            return "";
+        String result = ACRCloudStatusCode.NO_RESULT;
+        try {
+            byte[] fp = ACRCloudExtrTool.createFingerprintByFile(filePath, startSeconds, 12, false);
+            if (fp == null) {
+                return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
+            }
+            if (fp.length <= 0) {
+                return ACRCloudStatusCode.NO_RESULT;
+            }
+            result = this.doRecogize(fp);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = ACRCloudStatusCode.UNKNOW_ERROR;
         }
-        return this.doRecogize(fp);
+        return result;
     }
  
     private String doRecogize(byte[] fp) {
-        if (fp == null) {
-            System.out.println("create fingerprint error!");
-            return "";
-        }
-
         String method = "POST";
         String httpURL = "/v1/identify";
         String dataType = "fingerprint";
@@ -222,38 +247,50 @@ public class ACRCloudRecognizer {
 
             out.write(postBufferStream.toByteArray());
             out.flush();
-            int response = conn.getResponseCode();
-            if (response == HttpURLConnection.HTTP_OK) {
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
                 reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
                 String tmpRes = "";
                 while ((tmpRes = reader.readLine()) != null) {
                     if (tmpRes.length() > 0)
                         res = res + tmpRes;
                 }
+            } else {
+                System.out.println("http error response code " + responseCode);
+                res = ACRCloudStatusCode.HTTP_ERROR;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            res = ACRCloudStatusCode.HTTP_ERROR;
         } finally {
             try {
                 if (postBufferStream != null) {
                     postBufferStream.close();
                     postBufferStream = null;
                 }
+            } catch (Exception e) {}
+
+            try {
                 if (out != null) {
                     out.close();
                     out = null;
                 }
+            } catch (Exception e) {}
+
+            try {
                 if (reader != null) {
                     reader.close();
                     reader = null;
                 }
+            } catch (Exception e) {}
+
+            try {
                 if (conn != null) {
                     conn.disconnect();
                     conn = null;
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            } catch (Exception e) {}
         }
         return res;
     }
@@ -311,4 +348,13 @@ public class ACRCloudRecognizer {
         //byte[] fp = ACRCloudExtrTool.createFingerprintByBuffer(buffer, bufferLen, 180, 20, false);
         //System.out.println(fp.length);
     }
+}
+
+class ACRCloudStatusCode
+{
+    public static String HTTP_ERROR = "{\"status\":{\"msg\":\"Http Error\", \"code\":3000}}";
+    public static String NO_RESULT = "{\"status\":{\"msg\":\"No Result\", \"code\":1001}}";
+    public static String DECODE_AUDIO_ERROR = "{\"status\":{\"msg\":\"Can not decode audio data\", \"code\":2005}}";
+    public static String JSON_ERROR = "{\"status\":{\"msg\":\"json error\", \"code\":2002}}";
+    public static String UNKNOW_ERROR = "{\"status\":{\"msg\":\"unknow error\", \"code\":2010}}";
 }

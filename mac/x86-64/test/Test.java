@@ -11,13 +11,14 @@ import java.util.Map;
 import java.util.HashMap;
 
 import com.acrcloud.utils.ACRCloudRecognizer;
+import com.acrcloud.utils.ACRCloudExtrTool;
 
 public class Test {
 
     public static void main(String[] args) {
         Map<String, Object> config = new HashMap<String, Object>();
-        config.put("host", "ap-southeast-1.api.acrcloud.com");
         // Replace "xxxxxxxx" below with your project's access_key and access_secret.
+        config.put("host", "XXXXXXXX");
         config.put("access_key", "XXXXXXXX");
         config.put("access_secret", "XXXXXXXX");
         config.put("debug", false);
@@ -37,6 +38,10 @@ public class Test {
         // It will skip 0 seconds.
         String result = re.recognizeByFile(args[0], 0);
         System.out.println(result);
+
+
+        int fileDurationMS = ACRCloudExtrTool.getDurationMSByFile(args[0]);
+        System.out.println("duration_ms = "+fileDurationMS);
 
 
 
