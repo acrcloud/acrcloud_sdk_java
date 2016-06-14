@@ -54,7 +54,7 @@ public class Test {
           * 
           **/
         File file = new File(args[0]);
-        byte[] buffer = new byte[3 * 1024 * 1024];
+        byte[] buffer = new byte[(int)file.length()];
         if (!file.exists()) {
             return;
         }
