@@ -354,7 +354,7 @@ class ACRCloudStatusCode
 {
     public static String HTTP_ERROR = "{\"status\":{\"msg\":\"Http Error\", \"code\":3000}}";
     public static String NO_RESULT = "{\"status\":{\"msg\":\"No Result\", \"code\":1001}}";
-    public static String DECODE_AUDIO_ERROR = "{\"status\":{\"msg\":\"Can not decode audio data\", \"code\":2005}}";
-    public static String JSON_ERROR = "{\"status\":{\"msg\":\"json error\", \"code\":2002}}";
-    public static String UNKNOW_ERROR = "{\"status\":{\"msg\":\"unknow error\", \"code\":2010}}";
+    public static String DECODE_AUDIO_ERROR = "{\"status\":{\"msg\":\"Unable to generate fingerprint\", \"code\":2004}}";
+    public static String JSON_ERROR = "{\"status\":{\"msg\":\"Json Error\", \"code\":2002}}";
+    public static String UNKNOW_ERROR = "{\"status\":{\"msg\":\"Unknow Error\", \"code\":2010}}";
 }
