@@ -21,6 +21,7 @@ public class Test {
         config.put("host", "XXXXXXXX");
         config.put("access_key", "XXXXXXXX");
         config.put("access_secret", "XXXXXXXX");
+        config.put("rec_type", ACRCloudRecognizer.RecognizerType.AUDIO); // AUDIO, HUMMING, BOTH
         config.put("debug", false);
         config.put("timeout", 10); // seconds
 
@@ -53,6 +54,7 @@ public class Test {
           *     
           * 
           **/
+        /*
         File file = new File(args[0]);
         byte[] buffer = new byte[(int)file.length()];
         if (!file.exists()) {
@@ -82,6 +84,7 @@ public class Test {
         // It will skip 80 seconds from the begginning of (buffer).
         result = re.recognizeByFileBuffer(buffer, bufferLen, 0);
         System.out.println(result);
+        */
 
 
         // recognize by wav audio buffer(RIFF (little-endian) data, WAVE audio, Microsoft PCM, 16 bit, mono 8000 Hz) 
