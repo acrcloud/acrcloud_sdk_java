@@ -127,6 +127,11 @@ public class ACRCloudRecognizer {
 
     public String recognizeByFileBuffer(byte[] fileBuffer, int fileBufferLen, int startSeconds, int audioLenSeconds)
     {
+        return this.recognizeByFileBuffer(fileBuffer, fileBufferLen, startSeconds, audioLenSeconds, null);
+    }
+
+    public String recognizeByFileBuffer(byte[] fileBuffer, int fileBufferLen, int startSeconds, int audioLenSeconds, Map<String, String> userParams)
+    {
         String result = ACRCloudStatusCode.NO_RESULT;
         try {
             byte[] fp = null;
@@ -143,7 +148,25 @@ public class ACRCloudRecognizer {
                     fpHum = ACRCloudExtrTool.createHummingFingerprintByFileBuffer(fileBuffer, fileBufferLen, startSeconds, audioLenSeconds);
             }
 
-            result = this.doRecogize(fp, fpHum);
+            result = this.doRecogize(fp, fpHum, "fingerprint", userParams);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = ACRCloudStatusCode.UNKNOW_ERROR;
+        }
+        return result;
+    }
+
+    public String recognizeByFpBuffer(byte[] fpBuffer, int fpBufferLen, int startSeconds)
+    {
+        return this.recognizeByFpBuffer(fpBuffer, fpBufferLen, startSeconds, 10);
+    }
+
+    public String recognizeByFpBuffer(byte[] fpBuffer, int fpBufferLen, int startSeconds, int audioLenSeconds)
+    {
+        String result = ACRCloudStatusCode.NO_RESULT;
+        try {
+            byte[] fp = ACRCloudExtrTool.createFingerprintByFpBuffer(fpBuffer, fpBufferLen, startSeconds, audioLenSeconds);
+            result = this.doRecogize(fp, null);
         } catch (Exception e) {
             e.printStackTrace();
             result = ACRCloudStatusCode.UNKNOW_ERROR;
@@ -170,6 +193,11 @@ public class ACRCloudRecognizer {
 
     public String recognizeByFile(String filePath, int startSeconds, int audioLenSeconds)
     {
+        return this.recognizeByFile(filePath, startSeconds, audioLenSeconds, null);
+    }
+
+    public String recognizeByFile(String filePath, int startSeconds, int audioLenSeconds, Map<String, String> userParams)
+    {
         String result = ACRCloudStatusCode.NO_RESULT;
         try {
             byte[] fp = null;
@@ -186,44 +214,71 @@ public class ACRCloudRecognizer {
                     fpHum = ACRCloudExtrTool.createHummingFingerprintByFile(filePath, startSeconds, audioLenSeconds);
             }
 
-            result = this.doRecogize(fp, fpHum);
+            result = this.doRecogize(fp, fpHum, "fingerprint", userParams);
         } catch (Exception e) {
             e.printStackTrace();
             result = ACRCloudStatusCode.UNKNOW_ERROR;
         }
         return result;
     }
- 
+
+    public String recognizeAudioByFile(String filePath, int startSeconds, int audioLenSeconds)
+    {
+        return this.recognizeAudioByFile(filePath, startSeconds, audioLenSeconds, null);
+    }
+
+    public String recognizeAudioByFile(String filePath, int startSeconds, int audioLenSeconds, Map<String, String> userParams)
+    {
+        String result = ACRCloudStatusCode.NO_RESULT;
+        try {
+            byte[] pcmBuffer = ACRCloudExtrTool.decodeAudioByFile(filePath, startSeconds, audioLenSeconds);
+            result = this.doRecogize(pcmBuffer, null, "audio", userParams);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = ACRCloudStatusCode.UNKNOW_ERROR;
+        }
+        return result;
+    }
+
     private String doRecogize(byte[] fp, byte[] fpHum) {
-        switch (this.recType) {
-            case AUDIO:
-                if (fp == null) {
-                    return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
-                }
-                if (fp.length == 0) {
-                    return ACRCloudStatusCode.NO_RESULT;
-                }
-                break;
-            case HUMMING:
-                if (fpHum == null) {
-                    return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
-                }
-                if (fpHum.length == 0) {
-                    return ACRCloudStatusCode.NO_RESULT;
-                }
-                break;
-            default:
-                if (fp == null && fpHum == null) {
-                    return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
-                }
-                if ((fp == null || fp.length == 0) && (fpHum == null || fpHum.length == 0)) {
-                    return ACRCloudStatusCode.NO_RESULT;
-                }
+        return this.doRecogize(fp, fpHum, "fingerprint", null);
+    }
+ 
+    private String doRecogize(byte[] fp, byte[] fpHum, String dataType, Map<String, String> userParams) {
+        if ("fingerprint".equals(dataType)) {
+            switch (this.recType) {
+                case AUDIO:
+                    if (fp == null) {
+                        return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
+                    }
+                    if (fp.length == 0) {
+                        return ACRCloudStatusCode.NO_RESULT;
+                    }
+                    break;
+                case HUMMING:
+                    if (fpHum == null) {
+                        return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
+                    }
+                    if (fpHum.length == 0) {
+                        return ACRCloudStatusCode.NO_RESULT;
+                    }
+                    break;
+                default:
+                    if (fp == null && fpHum == null) {
+                        return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
+                    }
+                    if ((fp == null || fp.length == 0) && (fpHum == null || fpHum.length == 0)) {
+                        return ACRCloudStatusCode.NO_RESULT;
+                    }
+            }
+        } else {
+            if (fp == null || fp.length == 0) {
+                return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
+            }
         }
 
         String method = "POST";
         String httpURL = "/v1/identify";
-        String dataType = "fingerprint";
         String sigVersion = "1";
         String timestamp = getUTCTimeSeconds();
 
@@ -247,6 +302,12 @@ public class ACRCloudRecognizer {
         postParams.put("signature", signature);
         postParams.put("data_type", dataType);
         postParams.put("signature_version", sigVersion);
+
+        if (userParams != null) {
+            for (String key : userParams.keySet()) {
+                postParams.put(key, userParams.get(key));
+            }
+        }
 
         String res = postHttp(reqURL, postParams, this.timeout);
 
