@@ -29,6 +29,15 @@ x64: [download and install Library(windows/vcredist_x64.exe)](https://www.micros
 1. You must not modify package name "com.acrcloud.utils".<br>
 2. If you run the SDK on Windows, you must install library(vcredist).
 
+## Maven
+```XML
+<dependency>
+    <groupId>com.acrcloud.sdks</groupId>
+    <artifactId>com.acrcloud.sdks.recognizer</artifactId>
+    <version>1.0.1</version>
+</dependency>
+```
+
 ## Functions
 Introduction all API.
 ### src/com/acrcloud/utils/ACRCloudRecognizer.java

@@ -16,13 +16,7 @@ This module can recognize ACRCloud by most of audio/video file.
 
 package com.acrcloud.utils;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
@@ -31,12 +25,12 @@ import java.util.Map;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-// import commons-codec-<version>.jar, download from http://commons.apache.org/proper/commons-codec/download_codec.cgi
 import org.apache.commons.codec.binary.Base64;
 
 public class ACRCloudRecognizer {
 
     private String host = "ap-southeast-1.api.acrcloud.com";
+    private String protocol = "https";
     private String accessKey = "";
     private String accessSecret = "";
     private int timeout = 5 * 1000; // ms
@@ -50,6 +44,9 @@ public class ACRCloudRecognizer {
     public ACRCloudRecognizer(Map<String, Object> config) {
         if (config.get("host") != null) {
             this.host = (String)config.get("host");
+        }
+        if (config.get("protocol") != null) {
+            this.protocol = (String)config.get("protocol");
         }
         if (config.get("access_key") != null) {
             this.accessKey = (String)config.get("access_key");
@@ -282,7 +279,7 @@ public class ACRCloudRecognizer {
         String sigVersion = "1";
         String timestamp = getUTCTimeSeconds();
 
-        String reqURL = "http://" + host + httpURL;
+        String reqURL = this.protocol + "://" + this.host + httpURL;
 
         String sigStr = method + "\n" + httpURL + "\n" + accessKey + "\n" + dataType + "\n" + sigVersion + "\n" + timestamp;
         String signature = encryptByHMACSHA1(sigStr.getBytes(), this.accessSecret.getBytes());
@@ -429,9 +426,10 @@ public class ACRCloudRecognizer {
     }
 
     public static void main(String[] args) {
-    	Map<String, Object> config = new HashMap<String, Object>();
-        config.put("access_key", "XXXXXX");
-        config.put("access_secret", "XXXXXX");
+        Map<String, Object> config = new HashMap<String, Object>();
+        config.put("host", "identify-cn-north-1.acrcloud.cn");
+        config.put("access_key", "febbb4ab979004350d206f1c817b2737");
+        config.put("access_secret", "0cQK9weOZpsmgi1oLEbbdCGm1ezanlfoE2uUCWiO");
         config.put("debug", false);
         config.put("timeout", 5);
 
@@ -446,7 +444,7 @@ public class ACRCloudRecognizer {
         //byte[] fp = ACRCloudExtrTool.decodeAudioByFile(args[0], 200, 0);
         //System.out.println(fp.length);
 
-        File file = new File(args[0]);
+        File file = new File("/Users/pony/Downloads/test.m4a");
         byte[] buffer = new byte[3 * 1024 * 1024];
         if (!file.exists()) {
             return;
@@ -461,14 +459,14 @@ public class ACRCloudRecognizer {
         } finally {
             try {
                 if (fin != null) {
-                	fin.close();
+                    fin.close();
                 }
             } catch (IOException e) {
-            	e.printStackTrace();
+                e.printStackTrace();
             }
         }
         System.out.println("bufferLen=" + bufferLen);
-        
+
         if (bufferLen <= 0)
             return;
 
@@ -492,3 +490,4 @@ class ACRCloudStatusCode
     public static String JSON_ERROR = "{\"status\":{\"msg\":\"json error\", \"code\":2002}}";
     public static String UNKNOW_ERROR = "{\"status\":{\"msg\":\"unknow error\", \"code\":2010}}";
 }
+
