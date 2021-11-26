@@ -237,6 +237,19 @@ public class ACRCloudRecognizer {
         return result;
     }
 
+    public String recognizeAudioBuffer(byte[] audioBuffer, int audioBufferLen, Map<String, String> userParams)
+    {
+        if (audioBuffer == null) {
+            return ACRCloudStatusCode.NO_RESULT;
+        }
+        byte[] audioBufferNew = audioBuffer;
+        if (audioBufferLen < audioBuffer.length) {
+            audioBufferNew = new byte[audioBufferLen];
+            System.arraycopy(audioBuffer, 0, audioBufferNew, 0, audioBufferLen);
+        }
+        return this.doRecogize(audioBufferNew, null, "audio", userParams);
+    }
+
     private String doRecogize(byte[] fp, byte[] fpHum) {
         return this.doRecogize(fp, fpHum, "fingerprint", null);
     }
