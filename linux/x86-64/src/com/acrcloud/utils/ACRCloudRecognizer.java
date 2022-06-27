@@ -29,7 +29,7 @@ import org.apache.commons.codec.binary.Base64;
 
 public class ACRCloudRecognizer {
 
-    private String host = "ap-southeast-1.api.acrcloud.com";
+    private String host = "identify-eu-west-1.acrcloud.com";
     private String protocol = "https";
     private String accessKey = "";
     private String accessSecret = "";
