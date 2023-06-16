@@ -34,7 +34,7 @@ x64: [download and install Library(windows/vcredist_x64.exe)](https://www.micros
 <dependency>
     <groupId>com.acrcloud.sdks</groupId>
     <artifactId>com.acrcloud.sdks.recognizer</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 
