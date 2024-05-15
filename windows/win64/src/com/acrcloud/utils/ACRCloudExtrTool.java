@@ -122,7 +122,7 @@ public class ACRCloudExtrTool {
         if (dataBuffer == null || dataBufferLen <= 0) {
             return null;
         }
-        return native_decode_audio_by_filebuffer(dataBuffer, dataBufferLen, startTimeSeconds, audioLenSeconds);
+        return native_decode_audio_by_buffer(dataBuffer, dataBufferLen, startTimeSeconds, audioLenSeconds);
     }
 
     public static void setDebug() {
@@ -158,6 +158,7 @@ public class ACRCloudExtrTool {
     private static native byte[] native_create_humming_fingerprint(byte[] wav_data_buffer, int wav_data_buffer_len);
     private static native byte[] native_decode_audio_by_file(String file_name, int start_time_seconds, int audio_len_seconds);
     private static native byte[] native_decode_audio_by_filebuffer(byte[]data_buffer, int data_buffer_len, int start_time_seconds, int audio_len_seconds);
+    private static native byte[] native_decode_audio_by_buffer(byte[]data_buffer, int data_buffer_len, int start_time_seconds, int audio_len_seconds);
     private static native void native_set_debug();
     private static native int native_get_duration_ms_by_file(String file_name);
     private static native int native_get_duration_ms_by_fpbuffer(byte[] fp_buffer, int fp_buffer_len);
