@@ -1,13 +1,13 @@
 /**
  *
  *  @author qinxue.pan E-mail: xue@acrcloud.com
- *  @version 1.0.0
+ *  @version 1.0.4
  *  @create 2015.10.01
  *  
  **/
 
 /*
-Copyright 2015 ACRCloud Recognizer v1.0.0
+Copyright 2015 ACRCloud Recognizer v1.0.4
 
 This module can recognize ACRCloud by most of audio/video file. 
         Audio: mp3, wav, m4a, flac, aac, amr, ape, ogg ...
@@ -29,7 +29,7 @@ import org.apache.commons.codec.binary.Base64;
 
 public class ACRCloudRecognizer {
 
-    private String host = "identify-eu-west-1.acrcloud.com";
+    private String host = "ap-southeast-1.api.acrcloud.com";
     private String protocol = "https";
     private String accessKey = "";
     private String accessSecret = "";
@@ -237,6 +237,19 @@ public class ACRCloudRecognizer {
         return result;
     }
 
+    public String recognizeAudioByFileBuffer(byte[] fileBuffer, int fileBufferLen, int startSeconds, int audioLenSeconds, Map<String, String> userParams)
+    {
+        String result = ACRCloudStatusCode.NO_RESULT;
+        try {
+            byte[] pcmBuffer = ACRCloudExtrTool.decodeAudioByFileBuffer(fileBuffer, fileBufferLen, startSeconds, audioLenSeconds);
+            result = this.doRecogize(pcmBuffer, null, "audio", userParams);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = ACRCloudStatusCode.UNKNOW_ERROR;
+        }
+        return result;
+    }
+
     public String recognizeAudioBuffer(byte[] audioBuffer, int audioBufferLen, Map<String, String> userParams)
     {
         if (audioBuffer == null) {
@@ -259,7 +272,7 @@ public class ACRCloudRecognizer {
             switch (this.recType) {
                 case AUDIO:
                     if (fp == null) {
-                        return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
+                        return ACRCloudStatusCode.CREATE_FP_ERROR;
                     }
                     if (fp.length == 0) {
                         return ACRCloudStatusCode.NO_RESULT;
@@ -267,7 +280,7 @@ public class ACRCloudRecognizer {
                     break;
                 case HUMMING:
                     if (fpHum == null) {
-                        return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
+                        return ACRCloudStatusCode.CREATE_FP_ERROR;
                     }
                     if (fpHum.length == 0) {
                         return ACRCloudStatusCode.NO_RESULT;
@@ -275,7 +288,7 @@ public class ACRCloudRecognizer {
                     break;
                 default:
                     if (fp == null && fpHum == null) {
-                        return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
+                        return ACRCloudStatusCode.CREATE_FP_ERROR;
                     }
                     if ((fp == null || fp.length == 0) && (fpHum == null || fpHum.length == 0)) {
                         return ACRCloudStatusCode.NO_RESULT;
@@ -283,7 +296,7 @@ public class ACRCloudRecognizer {
             }
         } else {
             if (fp == null || fp.length == 0) {
-                return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
+                return ACRCloudStatusCode.CREATE_FP_ERROR;
             }
         }
 
@@ -441,8 +454,8 @@ public class ACRCloudRecognizer {
     public static void main(String[] args) {
         Map<String, Object> config = new HashMap<String, Object>();
         config.put("host", "identify-cn-north-1.acrcloud.cn");
-        config.put("access_key", "febbb4ab979004350d206f1c817b2737");
-        config.put("access_secret", "0cQK9weOZpsmgi1oLEbbdCGm1ezanlfoE2uUCWiO");
+        config.put("access_key", "XXXXXXXX");
+        config.put("access_secret", "XXXXXXXX");
         config.put("debug", false);
         config.put("timeout", 5);
 
@@ -499,6 +512,7 @@ class ACRCloudStatusCode
     public static String HTTP_ERROR = "{\"status\":{\"msg\":\"Http Error\", \"code\":3000}}";
     public static String NO_RESULT = "{\"status\":{\"msg\":\"No Result\", \"code\":1001}}";
     public static String DECODE_AUDIO_ERROR = "{\"status\":{\"msg\":\"Can not decode audio data\", \"code\":2005}}";
+    public static String CREATE_FP_ERROR = "{\"status\":{\"msg\":\"Can not create fingerprint\", \"code\":2004}}";
     public static String RECORD_ERROR = "{\"status\":{\"msg\":\"Record Error\", \"code\":2000}}";
     public static String JSON_ERROR = "{\"status\":{\"msg\":\"json error\", \"code\":2002}}";
     public static String UNKNOW_ERROR = "{\"status\":{\"msg\":\"unknow error\", \"code\":2010}}";
