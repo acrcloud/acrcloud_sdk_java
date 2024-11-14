@@ -1,13 +1,11 @@
 /**
- *
- *  @author qinxue.pan E-mail: xue@acrcloud.com
- *  @version 1.0.4
- *  @create 2015.10.01
- *  
+ * @author qinxue.pan E-mail: xue@acrcloud.com
+ * @version 1.0.0
+ * @create 2015.10.01
  **/
 
 /*
-Copyright 2015 ACRCloud Recognizer v1.0.4
+Copyright 2015 ACRCloud Recognizer v1.0.0
 
 This module can recognize ACRCloud by most of audio/video file. 
         Audio: mp3, wav, m4a, flac, aac, amr, ape, ogg ...
@@ -29,7 +27,7 @@ import org.apache.commons.codec.binary.Base64;
 
 public class ACRCloudRecognizer {
 
-    private String host = "ap-southeast-1.api.acrcloud.com";
+    private String host = "";
     private String protocol = "https";
     private String accessKey = "";
     private String accessSecret = "";
@@ -43,25 +41,25 @@ public class ACRCloudRecognizer {
 
     public ACRCloudRecognizer(Map<String, Object> config) {
         if (config.get("host") != null) {
-            this.host = (String)config.get("host");
+            this.host = (String) config.get("host");
         }
         if (config.get("protocol") != null) {
-            this.protocol = (String)config.get("protocol");
+            this.protocol = (String) config.get("protocol");
         }
         if (config.get("access_key") != null) {
-            this.accessKey = (String)config.get("access_key");
+            this.accessKey = (String) config.get("access_key");
         }
         if (config.get("access_secret") != null) {
-            this.accessSecret = (String)config.get("access_secret");
+            this.accessSecret = (String) config.get("access_secret");
         }
         if (config.get("timeout") != null) {
-            this.timeout = 1000 * ((Integer)config.get("timeout")).intValue();
+            this.timeout = 1000 * ((Integer) config.get("timeout")).intValue();
         }
         if (config.get("rec_type") != null) {
-            this.recType = (RecognizerType)(config.get("rec_type"));
+            this.recType = (RecognizerType) (config.get("rec_type"));
         }
         if (config.get("debug") != null) {
-            this.debug = ((Boolean)config.get("debug")).booleanValue();
+            this.debug = ((Boolean) config.get("debug")).booleanValue();
             if (this.debug) {
                 ACRCloudExtrTool.setDebug();
             }
@@ -69,17 +67,16 @@ public class ACRCloudRecognizer {
     }
 
     /**
-      *
-      *  recognize by wav audio buffer(RIFF (little-endian) data, WAVE audio, Microsoft PCM, 16 bit, mono 8000 Hz) 
-      *
-      *  @param wavAudioBuffer query audio buffer
-      *  @param wavAudioBufferLen the length of wavAudioBuffer
-      *  
-      *  @return result 
-      *
-      **/
-    public String recognize(byte[] wavAudioBuffer, int wavAudioBufferLen)
-    {
+     *
+     *  recognize by wav audio buffer(RIFF (little-endian) data, WAVE audio, Microsoft PCM, 16 bit, mono 8000 Hz)
+     *
+     *  @param wavAudioBuffer query audio buffer
+     *  @param wavAudioBufferLen the length of wavAudioBuffer
+     *
+     *  @return result
+     *
+     **/
+    public String recognize(byte[] wavAudioBuffer, int wavAudioBufferLen) {
         String result = ACRCloudStatusCode.NO_RESULT;
         try {
             byte[] fp = null;
@@ -95,7 +92,7 @@ public class ACRCloudRecognizer {
                     fp = ACRCloudExtrTool.createFingerprint(wavAudioBuffer, wavAudioBufferLen, false);
                     fpHum = ACRCloudExtrTool.createHummingFingerprint(wavAudioBuffer, wavAudioBufferLen);
             }
-            
+
             result = this.doRecogize(fp, fpHum);
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,30 +102,27 @@ public class ACRCloudRecognizer {
     }
 
     /**
-      *
-      *  recognize by buffer of (Audio/Video file)
-      *          Audio: mp3, wav, m4a, flac, aac, amr, ape, ogg ...
-      *          Video: mp4, mkv, wmv, flv, ts, avi ...
-      *
-      *  @param fileBuffer query buffer
-      *  @param fileBufferLen the length of fileBufferLen 
-      *  @param startSeconds skip (startSeconds) seconds from from the beginning of fileBuffer
-      *  
-      *  @return result 
-      *
-      **/
-    public String recognizeByFileBuffer(byte[] fileBuffer, int fileBufferLen, int startSeconds)
-    {
+     *
+     *  recognize by buffer of (Audio/Video file)
+     *          Audio: mp3, wav, m4a, flac, aac, amr, ape, ogg ...
+     *          Video: mp4, mkv, wmv, flv, ts, avi ...
+     *
+     *  @param fileBuffer query buffer
+     *  @param fileBufferLen the length of fileBufferLen
+     *  @param startSeconds skip (startSeconds) seconds from from the beginning of fileBuffer
+     *
+     *  @return result
+     *
+     **/
+    public String recognizeByFileBuffer(byte[] fileBuffer, int fileBufferLen, int startSeconds) {
         return this.recognizeByFileBuffer(fileBuffer, fileBufferLen, startSeconds, 12);
     }
 
-    public String recognizeByFileBuffer(byte[] fileBuffer, int fileBufferLen, int startSeconds, int audioLenSeconds)
-    {
+    public String recognizeByFileBuffer(byte[] fileBuffer, int fileBufferLen, int startSeconds, int audioLenSeconds) {
         return this.recognizeByFileBuffer(fileBuffer, fileBufferLen, startSeconds, audioLenSeconds, null);
     }
 
-    public String recognizeByFileBuffer(byte[] fileBuffer, int fileBufferLen, int startSeconds, int audioLenSeconds, Map<String, String> userParams)
-    {
+    public String recognizeByFileBuffer(byte[] fileBuffer, int fileBufferLen, int startSeconds, int audioLenSeconds, Map<String, String> userParams) {
         String result = ACRCloudStatusCode.NO_RESULT;
         try {
             byte[] fp = null;
@@ -153,13 +147,11 @@ public class ACRCloudRecognizer {
         return result;
     }
 
-    public String recognizeByFpBuffer(byte[] fpBuffer, int fpBufferLen, int startSeconds)
-    {
+    public String recognizeByFpBuffer(byte[] fpBuffer, int fpBufferLen, int startSeconds) {
         return this.recognizeByFpBuffer(fpBuffer, fpBufferLen, startSeconds, 10);
     }
 
-    public String recognizeByFpBuffer(byte[] fpBuffer, int fpBufferLen, int startSeconds, int audioLenSeconds)
-    {
+    public String recognizeByFpBuffer(byte[] fpBuffer, int fpBufferLen, int startSeconds, int audioLenSeconds) {
         String result = ACRCloudStatusCode.NO_RESULT;
         try {
             byte[] fp = ACRCloudExtrTool.createFingerprintByFpBuffer(fpBuffer, fpBufferLen, startSeconds, audioLenSeconds);
@@ -172,29 +164,26 @@ public class ACRCloudRecognizer {
     }
 
     /**
-      *
-      *  recognize by file path of (Audio/Video file)
-      *          Audio: mp3, wav, m4a, flac, aac, amr, ape, ogg ...
-      *          Video: mp4, mkv, wmv, flv, ts, avi ...
-      *
-      *  @param filePath query file path
-      *  @param startSeconds skip (startSeconds) seconds from from the beginning of (filePath)
-      *  
-      *  @return result 
-      *
-      **/
-    public String recognizeByFile(String filePath, int startSeconds)
-    {
+     *
+     *  recognize by file path of (Audio/Video file)
+     *          Audio: mp3, wav, m4a, flac, aac, amr, ape, ogg ...
+     *          Video: mp4, mkv, wmv, flv, ts, avi ...
+     *
+     *  @param filePath query file path
+     *  @param startSeconds skip (startSeconds) seconds from from the beginning of (filePath)
+     *
+     *  @return result
+     *
+     **/
+    public String recognizeByFile(String filePath, int startSeconds) {
         return this.recognizeByFile(filePath, startSeconds, 12);
     }
 
-    public String recognizeByFile(String filePath, int startSeconds, int audioLenSeconds)
-    {
+    public String recognizeByFile(String filePath, int startSeconds, int audioLenSeconds) {
         return this.recognizeByFile(filePath, startSeconds, audioLenSeconds, null);
     }
 
-    public String recognizeByFile(String filePath, int startSeconds, int audioLenSeconds, Map<String, String> userParams)
-    {
+    public String recognizeByFile(String filePath, int startSeconds, int audioLenSeconds, Map<String, String> userParams) {
         String result = ACRCloudStatusCode.NO_RESULT;
         try {
             byte[] fp = null;
@@ -219,13 +208,11 @@ public class ACRCloudRecognizer {
         return result;
     }
 
-    public String recognizeAudioByFile(String filePath, int startSeconds, int audioLenSeconds)
-    {
+    public String recognizeAudioByFile(String filePath, int startSeconds, int audioLenSeconds) {
         return this.recognizeAudioByFile(filePath, startSeconds, audioLenSeconds, null);
     }
 
-    public String recognizeAudioByFile(String filePath, int startSeconds, int audioLenSeconds, Map<String, String> userParams)
-    {
+    public String recognizeAudioByFile(String filePath, int startSeconds, int audioLenSeconds, Map<String, String> userParams) {
         String result = ACRCloudStatusCode.NO_RESULT;
         try {
             byte[] pcmBuffer = ACRCloudExtrTool.decodeAudioByFile(filePath, startSeconds, audioLenSeconds);
@@ -237,8 +224,7 @@ public class ACRCloudRecognizer {
         return result;
     }
 
-    public String recognizeAudioByFileBuffer(byte[] fileBuffer, int fileBufferLen, int startSeconds, int audioLenSeconds, Map<String, String> userParams)
-    {
+    public String recognizeAudioByFileBuffer(byte[] fileBuffer, int fileBufferLen, int startSeconds, int audioLenSeconds, Map<String, String> userParams) {
         String result = ACRCloudStatusCode.NO_RESULT;
         try {
             byte[] pcmBuffer = ACRCloudExtrTool.decodeAudioByFileBuffer(fileBuffer, fileBufferLen, startSeconds, audioLenSeconds);
@@ -250,10 +236,9 @@ public class ACRCloudRecognizer {
         return result;
     }
 
-    public String recognizeAudioBuffer(byte[] audioBuffer, int audioBufferLen, Map<String, String> userParams)
-    {
+    public String recognizeAudioBuffer(byte[] audioBuffer, int audioBufferLen, Map<String, String> userParams) {
         if (audioBuffer == null) {
-            return ACRCloudStatusCode.NO_RESULT;
+            return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
         }
         byte[] audioBufferNew = audioBuffer;
         if (audioBufferLen < audioBuffer.length) {
@@ -266,37 +251,37 @@ public class ACRCloudRecognizer {
     private String doRecogize(byte[] fp, byte[] fpHum) {
         return this.doRecogize(fp, fpHum, "fingerprint", null);
     }
- 
+
     private String doRecogize(byte[] fp, byte[] fpHum, String dataType, Map<String, String> userParams) {
         if ("fingerprint".equals(dataType)) {
             switch (this.recType) {
                 case AUDIO:
                     if (fp == null) {
-                        return ACRCloudStatusCode.CREATE_FP_ERROR;
+                        return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
                     }
                     if (fp.length == 0) {
-                        return ACRCloudStatusCode.NO_RESULT;
+                        return ACRCloudStatusCode.CREATE_FP_ERROR;
                     }
                     break;
                 case HUMMING:
                     if (fpHum == null) {
-                        return ACRCloudStatusCode.CREATE_FP_ERROR;
+                        return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
                     }
                     if (fpHum.length == 0) {
-                        return ACRCloudStatusCode.NO_RESULT;
+                        return ACRCloudStatusCode.CREATE_FP_ERROR;
                     }
                     break;
                 default:
                     if (fp == null && fpHum == null) {
-                        return ACRCloudStatusCode.CREATE_FP_ERROR;
+                        return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
                     }
                     if ((fp == null || fp.length == 0) && (fpHum == null || fpHum.length == 0)) {
-                        return ACRCloudStatusCode.NO_RESULT;
+                        return ACRCloudStatusCode.CREATE_FP_ERROR;
                     }
             }
         } else {
             if (fp == null || fp.length == 0) {
-                return ACRCloudStatusCode.CREATE_FP_ERROR;
+                return ACRCloudStatusCode.DECODE_AUDIO_ERROR;
             }
         }
 
@@ -354,14 +339,14 @@ public class ACRCloudRecognizer {
         }
         return "";
     }
-    
-    private String getUTCTimeSeconds() {  
-        Calendar cal = Calendar.getInstance();   
-        int zoneOffset = cal.get(Calendar.ZONE_OFFSET);   
-        int dstOffset = cal.get(Calendar.DST_OFFSET);    
-        cal.add(Calendar.MILLISECOND, -(zoneOffset + dstOffset));    
-        return cal.getTimeInMillis()/1000 + "";
-    }  
+
+    private String getUTCTimeSeconds() {
+        Calendar cal = Calendar.getInstance();
+        int zoneOffset = cal.get(Calendar.ZONE_OFFSET);
+        int dstOffset = cal.get(Calendar.DST_OFFSET);
+        cal.add(Calendar.MILLISECOND, -(zoneOffset + dstOffset));
+        return cal.getTimeInMillis() / 1000 + "";
+    }
 
     private String postHttp(String posturl, Map<String, Object> params, int timeOut) {
         String res = "";
@@ -369,7 +354,7 @@ public class ACRCloudRecognizer {
         String BOUNDARY = "--" + BOUNDARYSTR + "\r\n";
         String ENDBOUNDARY = "--" + BOUNDARYSTR + "--\r\n\r\n";
         String stringKeyHeader = BOUNDARY + "Content-Disposition:form-data;name=\"%s\"" + "\r\n\r\n%s\r\n";
-        String filePartHeader = BOUNDARY + "Content-Disposition: form-data;name=\"%s\";filename=\"%s\"\r\n" + "Content-Type:application/octet-stream\r\n\r\n";		
+        String filePartHeader = BOUNDARY + "Content-Disposition: form-data;name=\"%s\";filename=\"%s\"\r\n" + "Content-Type:application/octet-stream\r\n\r\n";
         URL url = null;
         HttpURLConnection conn = null;
         BufferedOutputStream out = null;
@@ -379,7 +364,7 @@ public class ACRCloudRecognizer {
             for (String key : params.keySet()) {
                 Object value = params.get(key);
                 if (value instanceof String || value instanceof Integer) {
-                    postBufferStream.write(String.format(stringKeyHeader, key, (String)value).getBytes());
+                    postBufferStream.write(String.format(stringKeyHeader, key, (String) value).getBytes());
                 } else if (value instanceof byte[]) {
                     postBufferStream.write(String.format(filePartHeader, key, key).getBytes());
                     postBufferStream.write((byte[]) value);
@@ -387,7 +372,7 @@ public class ACRCloudRecognizer {
                 }
             }
             postBufferStream.write(ENDBOUNDARY.getBytes());
-            
+
             url = new URL(posturl);
             conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(timeOut);
@@ -425,28 +410,32 @@ public class ACRCloudRecognizer {
                     postBufferStream.close();
                     postBufferStream = null;
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
 
             try {
                 if (out != null) {
                     out.close();
                     out = null;
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
 
             try {
                 if (reader != null) {
                     reader.close();
                     reader = null;
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
 
             try {
                 if (conn != null) {
                     conn.disconnect();
                     conn = null;
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
         return res;
     }
@@ -507,14 +496,12 @@ public class ACRCloudRecognizer {
     }
 }
 
-class ACRCloudStatusCode
-{
+class ACRCloudStatusCode {
     public static String HTTP_ERROR = "{\"status\":{\"msg\":\"Http Error\", \"code\":3000}}";
     public static String NO_RESULT = "{\"status\":{\"msg\":\"No Result\", \"code\":1001}}";
-    public static String DECODE_AUDIO_ERROR = "{\"status\":{\"msg\":\"Can not decode audio data\", \"code\":2005}}";
+    public static String DECODE_AUDIO_ERROR = "{\"status\":{\"msg\":\"Can not decode audio data\", \"code\":2006}}";
     public static String CREATE_FP_ERROR = "{\"status\":{\"msg\":\"Can not create fingerprint\", \"code\":2004}}";
     public static String RECORD_ERROR = "{\"status\":{\"msg\":\"Record Error\", \"code\":2000}}";
     public static String JSON_ERROR = "{\"status\":{\"msg\":\"json error\", \"code\":2002}}";
     public static String UNKNOW_ERROR = "{\"status\":{\"msg\":\"unknow error\", \"code\":2010}}";
 }
-
