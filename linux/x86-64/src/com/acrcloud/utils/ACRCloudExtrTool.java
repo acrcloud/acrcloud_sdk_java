@@ -51,7 +51,7 @@ public class ACRCloudExtrTool {
     static {
         try {
             System.loadLibrary("acrcloud_extr_tool");
-            //com.github.fommil.jni.JniLoader.load(getLibraryName());
+//            com.github.fommil.jni.JniLoader.load(getLibraryName());
             native_init();
         } catch (Exception e) {
             System.err.println("acrcloud_extr_tool loadLibrary error!");
@@ -59,28 +59,33 @@ public class ACRCloudExtrTool {
     }
 
     private static String getLibraryName() {
-        String os = "";
-        String type = "";
-        String arch = "i386";
+        final String osName = System.getProperty("os.name", "").toLowerCase();
 
-        String osName = System.getProperty("os.name", "").toLowerCase();
+        // macOS: library name has no arch suffix, return early
+        if (!osName.startsWith("linux") && !osName.startsWith("windows")) {
+            return "libacrcloud_extr_tool-osx.dylib";
+        }
+
+        // Determine OS segment and library extension
+        final String os;
+        final String type;
         if (osName.startsWith("linux")) {
             os = "linux";
             type = "so";
-        } else if (osName.startsWith("windows")) {
+        } else {
             os = "win";
             type = "dll";
-        } else {
-            os = "osx";
-            type = "dylib";
         }
 
-        String archName = System.getProperty("os.arch", "").toLowerCase();
+        // Determine architecture segment
+        final String archName = System.getProperty("os.arch", "").toLowerCase();
+        final String arch;
         if ("x86_64".equals(archName) || "amd64".equals(archName)) {
             arch = "x86_64";
-        }
-        if ("aarch64".equals(archName)) {
+        } else if ("aarch64".equals(archName)) {
             arch = "aarch64";
+        } else {
+            arch = "i386"; // covers x86 (32-bit Windows) and other x86 variants
         }
 
         return "libacrcloud_extr_tool-" + os + "-" + arch + "." + type;
@@ -207,6 +212,7 @@ public class ACRCloudExtrTool {
     private static native void native_set_debug();
 
     private static native int native_get_duration_ms_by_file(String file_name);
+
     private static native int native_get_duration_ms_by_filebuffer(byte[] data_buffer, int data_buffer_len);
 
     private static native int native_get_duration_ms_by_fpbuffer(byte[] fp_buffer, int fp_buffer_len);

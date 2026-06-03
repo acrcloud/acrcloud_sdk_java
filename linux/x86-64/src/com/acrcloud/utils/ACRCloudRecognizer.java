@@ -68,50 +68,14 @@ public class ACRCloudRecognizer {
 
     /**
      *
-     *  recognize by wav audio buffer(RIFF (little-endian) data, WAVE audio, Microsoft PCM, 16 bit, mono 8000 Hz)
+     * recognize by buffer of (Audio/Video file)
+     * Audio: mp3, wav, m4a, flac, aac, amr, ape, ogg ...
+     * Video: mp4, mkv, wmv, flv, ts, avi ...
      *
-     *  @param wavAudioBuffer query audio buffer
-     *  @param wavAudioBufferLen the length of wavAudioBuffer
-     *
-     *  @return result
-     *
-     **/
-    public String recognize(byte[] wavAudioBuffer, int wavAudioBufferLen) {
-        String result = ACRCloudStatusCode.NO_RESULT;
-        try {
-            byte[] fp = null;
-            byte[] fpHum = null;
-            switch (this.recType) {
-                case AUDIO:
-                    fp = ACRCloudExtrTool.createFingerprint(wavAudioBuffer, wavAudioBufferLen, false);
-                    break;
-                case HUMMING:
-                    fpHum = ACRCloudExtrTool.createHummingFingerprint(wavAudioBuffer, wavAudioBufferLen);
-                    break;
-                default:
-                    fp = ACRCloudExtrTool.createFingerprint(wavAudioBuffer, wavAudioBufferLen, false);
-                    fpHum = ACRCloudExtrTool.createHummingFingerprint(wavAudioBuffer, wavAudioBufferLen);
-            }
-
-            result = this.doRecogize(fp, fpHum);
-        } catch (Exception e) {
-            e.printStackTrace();
-            result = ACRCloudStatusCode.UNKNOW_ERROR;
-        }
-        return result;
-    }
-
-    /**
-     *
-     *  recognize by buffer of (Audio/Video file)
-     *          Audio: mp3, wav, m4a, flac, aac, amr, ape, ogg ...
-     *          Video: mp4, mkv, wmv, flv, ts, avi ...
-     *
-     *  @param fileBuffer query buffer
-     *  @param fileBufferLen the length of fileBufferLen
-     *  @param startSeconds skip (startSeconds) seconds from from the beginning of fileBuffer
-     *
-     *  @return result
+     * @param fileBuffer    query buffer
+     * @param fileBufferLen the length of fileBufferLen
+     * @param startSeconds  skip (startSeconds) seconds from from the beginning of fileBuffer
+     * @return result
      *
      **/
     public String recognizeByFileBuffer(byte[] fileBuffer, int fileBufferLen, int startSeconds) {
@@ -165,14 +129,13 @@ public class ACRCloudRecognizer {
 
     /**
      *
-     *  recognize by file path of (Audio/Video file)
-     *          Audio: mp3, wav, m4a, flac, aac, amr, ape, ogg ...
-     *          Video: mp4, mkv, wmv, flv, ts, avi ...
+     * recognize by file path of (Audio/Video file)
+     * Audio: mp3, wav, m4a, flac, aac, amr, ape, ogg ...
+     * Video: mp4, mkv, wmv, flv, ts, avi ...
      *
-     *  @param filePath query file path
-     *  @param startSeconds skip (startSeconds) seconds from from the beginning of (filePath)
-     *
-     *  @return result
+     * @param filePath     query file path
+     * @param startSeconds skip (startSeconds) seconds from from the beginning of (filePath)
+     * @return result
      *
      **/
     public String recognizeByFile(String filePath, int startSeconds) {
