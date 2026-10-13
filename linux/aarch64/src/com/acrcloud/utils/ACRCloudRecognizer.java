@@ -468,4 +468,3 @@ class ACRCloudStatusCode {
     public static String JSON_ERROR = "{\"status\":{\"msg\":\"json error\", \"code\":2002}}";
     public static String UNKNOW_ERROR = "{\"status\":{\"msg\":\"unknow error\", \"code\":2010}}";
 }
-

@@ -50,8 +50,8 @@ public class ACRCloudExtrTool {
 
     static {
         try {
-            System.loadLibrary("acrcloud_extr_tool");
-//            com.github.fommil.jni.JniLoader.load(getLibraryName());
+//            System.loadLibrary("acrcloud_extr_tool");
+            com.github.fommil.jni.JniLoader.load(getLibraryName());
             native_init();
         } catch (Exception e) {
             System.err.println("acrcloud_extr_tool loadLibrary error!");
@@ -219,4 +219,3 @@ public class ACRCloudExtrTool {
 
     private static native String native_get_doc();
 }
-
